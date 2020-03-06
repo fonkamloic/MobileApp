@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -42,24 +44,25 @@ class Auth implements AuthBase {
   // Sign IN with google
   @override
   Future<User> signInWithGoogle() async {
-    GoogleSignIn googleSignIn = GoogleSignIn();
-    GoogleSignInAccount googleAccount = await googleSignIn.signIn();
+    GoogleSignIn googleSignIn = GoogleSignIn();    GoogleSignInAccount googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
       GoogleSignInAuthentication googleAuth =
-          await googleAccount.authentication;
+      await googleAccount.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
         final authResult = await _firebaseAuth.signInWithCredential(
           GoogleAuthProvider.getCredential(
-              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken),
+              idToken: googleAuth.idToken,
+              accessToken: googleAuth.accessToken),
         );
         return _userFromFirebase(authResult.user);
-      } else {
+      }
+     else {
         throw PlatformException(
           code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
           message: 'Missing Google Auth Token',
         );
       }
-    } else {
+    }else {
       throw PlatformException(
         code: 'ERROR_ABORTED_BY_USER',
         message: 'Sign in aborted by User',
@@ -71,6 +74,10 @@ class Auth implements AuthBase {
   @override
   Future<User> signInWithFacebook() async {
     final facebookLogin = FacebookLogin();
+    if(Platform.isIOS){
+      facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+
+    }
 
     try {
       final result = await facebookLogin.logInWithReadPermissions(
@@ -90,6 +97,7 @@ class Auth implements AuthBase {
       }
     } catch (e) {
       print(e.toString());
+      rethrow;
     }
   }
 
