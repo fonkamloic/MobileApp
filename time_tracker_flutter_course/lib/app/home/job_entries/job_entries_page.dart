@@ -21,7 +21,7 @@ class JobEntriesPage extends StatelessWidget {
 
     await Navigator.of(context).push(
       MaterialPageRoute(
-        fullscreenDialog: true,
+        fullscreenDialog: false,
         builder: (context) => JobEntriesPage(database: database, job: job),
       ),
     );
@@ -48,24 +48,30 @@ class JobEntriesPage extends StatelessWidget {
             elevation: 2.0,
             title: Text(jobName),
             actions: <Widget>[
-              FlatButton(
+              IconButton(
                 onPressed: () =>
                     EditJobPage.show(context, database: database, job: job),
-                child: Text(
-                  "Edit",
-                  style: TextStyle(fontSize: 18.0, color: Colors.white),
+                icon: Icon(Icons.edit, color: Colors.white),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
                 ),
+                onPressed: () => EntryPage.show(
+                    context: context, database: database, job: job),
               ),
             ],
           ),
           body: _buildContent(context, job),
-          floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () => EntryPage.show(
-                    context: context,
-                    database: database,
-                    job: job,
-                  )),
+          // floatingActionButton: FloatingActionButton(
+          //     child: Icon(Icons.add),
+          //     onPressed: () => EntryPage.show(
+          //           context: context,
+          //           database: database,
+          //           job: job,
+          //         ),
+          //         ),
         );
       },
     );
