@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker_flutter_course/common_widgets/avatar.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 class AccountPage extends StatelessWidget {
- Future<void> _signOut(BuildContext context) async {
+  Future<void> _signOut(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context);
       await auth.signOut();
@@ -13,7 +14,7 @@ class AccountPage extends StatelessWidget {
     }
   }
 
- Future<void> _confirmSignOut(BuildContext context) async {
+  Future<void> _confirmSignOut(BuildContext context) async {
     final didRequestSignOut = await PlatformAlertDialog(
       title: 'Logout',
       content: 'Are you sure that you want to logout?',
@@ -25,9 +26,9 @@ class AccountPage extends StatelessWidget {
     }
   }
 
-
- @override
+  @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<User>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Account'),
@@ -43,7 +44,27 @@ class AccountPage extends StatelessWidget {
             onPressed: () => _confirmSignOut(context),
           ),
         ],
+        bottom: PreferredSize(
+            child: _buildUserInfo(user), preferredSize: Size.fromHeight(130)),
       ),
+    );
+  }
+
+  Widget _buildUserInfo(User user) {
+    return Column(
+      children: <Widget>[
+        Avatar(
+          photoUrl: user.photoUrl,
+          radius: 50,
+        ),
+        SizedBox(height: 8),
+        if (user.displayName != null)
+          Text(
+            user.displayName,
+            style: TextStyle(color: Colors.white),
+          ),
+        SizedBox(height: 8),
+      ],
     );
   }
 }
