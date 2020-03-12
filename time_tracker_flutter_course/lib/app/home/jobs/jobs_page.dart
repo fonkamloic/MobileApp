@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -13,26 +12,6 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'package:time_tracker_flutter_course/services/database.dart';
 
 class JobsPage extends StatelessWidget {
-  Future<void> _signOut(BuildContext context) async {
-    try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.signOut();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> _confirmSignOut(BuildContext context) async {
-    final didRequestSignOut = await PlatformAlertDialog(
-      title: 'Logout',
-      content: 'Are you sure you want to Logout?',
-      cancelActionText: 'Cancel',
-      defaultActionText: 'Logout',
-    ).show(context);
-    if (didRequestSignOut == true) {
-      _signOut(context);
-    }
-  }
 Future<void> _delete(BuildContext context, Job job) async {
     try {
       final database = Provider.of<Database>(context, listen: false);
@@ -42,32 +21,27 @@ Future<void> _delete(BuildContext context, Job job) async {
           .show(context);
     }
   }
-  @override
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Jobs'),
         actions: <Widget>[
-          FlatButton(
-            child: Text(
-              "Logout",
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-            onPressed: () => _confirmSignOut(context),
-          )
+          IconButton(icon: Icon(Icons.add, color: Colors.white,), onPressed: () =>EditJobPage.show(context, database: Provider.of<Database>(context, listen: false)),),
         ],
       ),
       body: _buildContents(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => EditJobPage.show(context, database: Provider.of<Database>(context, listen:  false),),
-        child: Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => EditJobPage.show(
+      //     context,
+      //     database: Provider.of<Database>(context, listen: false),
+      //   ),
+      //   child: Icon(Icons.add),
+      // ),
     );
   }
-
-  
-
-  Widget _buildContents(BuildContext context) {
+ Widget _buildContents(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder(
       stream: database.jobsStream(),
@@ -81,11 +55,40 @@ Future<void> _delete(BuildContext context, Job job) async {
             onDismissed: (direction) => _delete(context, job),
             child: JobListTile(
               job: job,
-              onTap: () => JobEntriesPage.show( context, job ,),
+              onTap: () => JobEntriesPage.show(
+                context,
+                job,
+              ),
             ),
           ),
         );
       },
     );
   }
+  // Future<void> _signOut(BuildContext context) async {
+  //   try {
+  //     final auth = Provider.of<AuthBase>(context, listen: false);
+  //     await auth.signOut();
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
+
+  // Future<void> _confirmSignOut(BuildContext context) async {
+  //   final didRequestSignOut = await PlatformAlertDialog(
+  //     title: 'Logout',
+  //     content: 'Are you sure you want to Logout?',
+  //     cancelActionText: 'Cancel',
+  //     defaultActionText: 'Logout',
+  //   ).show(context);
+  //   if (didRequestSignOut == true) {
+  //     _signOut(context);
+  //   }
+  // }
+
+  
+
+  
+
+ 
 }
