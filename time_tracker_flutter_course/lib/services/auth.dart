@@ -8,13 +8,17 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class User {
+  User(
+      {@required this.uid,
+      @required this.photoUrl,
+      @required this.displayName});
   final String uid;
-
-  User({@required this.uid});
+  final String photoUrl;
+  final String displayName;
 }
 
 abstract class AuthBase {
-  Stream<User> get onAuthStateChanged ;
+  Stream<User> get onAuthStateChanged;
   Future<User> currentUser();
 
   Future<User> signInAnonymously();
@@ -38,7 +42,8 @@ class Auth implements AuthBase {
     if (user == null) {
       return null;
     }
-    return User(uid: user.uid);
+    return User(
+        uid: user.uid, displayName: user.displayName, photoUrl: user.photoUrl);
   }
 
   // Sign IN with google
@@ -99,7 +104,6 @@ class Auth implements AuthBase {
   //   }
   // }
 
-
   @override
   Future<User> signInWithFacebook() async {
     final facebookLogin = FacebookLogin();
@@ -127,18 +131,18 @@ class Auth implements AuthBase {
   //Sign in with email and password
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-      final authResult = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return _userFromFirebase(authResult.user);
+    final authResult = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return _userFromFirebase(authResult.user);
   }
 
 //Create user with email and password
   @override
   Future<User> createUserWithEmailAndPassword(
       String email, String password) async {
-      final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      return _userFromFirebase(authResult.user);
+    final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    return _userFromFirebase(authResult.user);
   }
 
   // Get current user
@@ -151,24 +155,23 @@ class Auth implements AuthBase {
   // Sign in anonymously
   @override
   Future<User> signInAnonymously() async {
-      final authResult = await _firebaseAuth.signInAnonymously();
-      return _userFromFirebase(authResult.user);
+    final authResult = await _firebaseAuth.signInAnonymously();
+    return _userFromFirebase(authResult.user);
   }
 
   // Sign Out
   @override
   Future<void> signOut() async {
     final googleSignIn = GoogleSignIn();
-    
-    await googleSignIn.signOut();final facebookLogin = FacebookLogin();
+
+    await googleSignIn.signOut();
+    final facebookLogin = FacebookLogin();
     await facebookLogin.logOut();
     await _firebaseAuth.signOut();
   }
 
   @override
   Stream<User> get onAuthStateChanged {
-   
-
     return _firebaseAuth.onAuthStateChanged.map(_userFromFirebase);
   }
 }
