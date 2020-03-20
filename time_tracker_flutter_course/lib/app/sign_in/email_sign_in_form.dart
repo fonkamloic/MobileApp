@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,10 +6,11 @@ import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.da
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
-
 enum EmailSignInFormType { signIn, register }
 
 class EmailSignInForm extends StatefulWidget {
+  EmailSignInForm({this.onSignedIn});
+  final VoidCallback onSignedIn;
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -55,7 +55,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         await auth.signInWithEmailAndPassword(
             _emailController.text, _passwordController.text);
       }
-      Navigator.of(context).pop();
+      if (widget.onSignedIn != null) {
+        widget.onSignedIn();
+      }
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(
         title: 'Sign in Failed',
@@ -75,98 +77,96 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   @override
   Widget build(BuildContext context) {
     String primaryText =
-    _formType == EmailSignInFormType.signIn ? 'Sign In' : 'Register';
+        _formType == EmailSignInFormType.signIn ? 'Sign In' : 'Register';
     String secondaryText = _formType == EmailSignInFormType.signIn
         ? 'Need an Account? Register'
         : 'Already have an account? Login';
-    return   Padding(
-        padding: EdgeInsets.all(18.0),
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.all(18),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    TextFormField(
-                      validator: (val) =>
-                      !val.contains('@') || !val.contains('.')
-                          ? 'Invalid email'
-                          : null,
-                      focusNode: _emailFocusNode,
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                          hintText: 'yourEmail@domain.com',
-                          labelText: 'Email'),
-                      autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: _emailEditingComplete,
-                      onChanged: (val) {
-                        setState(() {
-                          if (_formKey.currentState.validate()) {
-                            _formValid = true;
-                          } else {
-                            _formValid = false;
-                          }
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    TextFormField(
-                      validator: (val) =>
-                      val.length < 5 ? 'Password too short' : null,
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      obscureText: true,
-                      decoration: InputDecoration(labelText: 'Password'),
-                      textInputAction: TextInputAction.done,
-                      onEditingComplete: () => _submit(context),
-                      onChanged: (val) {
-                        setState(() {
-                          if (_formKey.currentState.validate()) {
-                            _formValid = true;
-                          } else {
-                            _formValid = false;
-                          }
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    FormSubmitButton(
-                      text: primaryText,
-                      onPressed:
-                      _formValid ? () => _submit(context) : null,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    FlatButton(
-                      child: Text(secondaryText),
-                      onPressed: () {
-                        setState(() {
-                          _formType =
-                          _formType == EmailSignInFormType.signIn
-                              ? EmailSignInFormType.register
-                              : EmailSignInFormType.signIn;
-                          _passwordController.clear();
-                          _emailController.clear();
-                        });
-                      },
-                    ),
-                  ],
-                ),
+    return Padding(
+      padding: EdgeInsets.all(18.0),
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(18),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  TextFormField(
+                    key: Key('email'),
+                    validator: (val) => !val.contains('@') || !val.contains('.')
+                        ? 'Invalid email'
+                        : null,
+                    focusNode: _emailFocusNode,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                        hintText: 'yourEmail@domain.com', labelText: 'Email'),
+                    autocorrect: false,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: _emailEditingComplete,
+                    onChanged: (val) {
+                      setState(() {
+                        if (_formKey.currentState.validate()) {
+                          _formValid = true;
+                        } else {
+                          _formValid = false;
+                        }
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  TextFormField(
+                    key: Key('password'),
+                    validator: (val) =>
+                        val.length < 5 ? 'Password too short' : null,
+                    controller: _passwordController,
+                    focusNode: _passwordFocusNode,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Password'),
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => _submit(context),
+                    onChanged: (val) {
+                      setState(() {
+                        if (_formKey.currentState.validate()) {
+                          _formValid = true;
+                        } else {
+                          _formValid = false;
+                        }
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  FormSubmitButton(
+                    text: primaryText,
+                    onPressed: _formValid ? () => _submit(context) : null,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  FlatButton(
+                    child: Text(secondaryText),
+                    onPressed: () {
+                      setState(() {
+                        _formType = _formType == EmailSignInFormType.signIn
+                            ? EmailSignInFormType.register
+                            : EmailSignInFormType.signIn;
+                        _passwordController.clear();
+                        _emailController.clear();
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
           ),
         ),
+      ),
     );
   }
 }
