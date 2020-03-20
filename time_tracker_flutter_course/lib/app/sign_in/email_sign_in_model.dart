@@ -1,9 +1,9 @@
-
+import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/validator.dart';
 
 enum EmailSignInFormType { signIn, register }
 
-class EmailSignInModel  with EmailAndPasswordValidators{
+class EmailSignInModel with EmailAndPasswordValidators {
   EmailSignInModel({
     this.email = '',
     this.password = '',
@@ -17,7 +17,6 @@ class EmailSignInModel  with EmailAndPasswordValidators{
   final EmailSignInFormType formType;
   final bool isLoading;
   final bool submitted;
-
 
   String get primaryButtonText {
     return formType == EmailSignInFormType.signIn
@@ -62,4 +61,23 @@ class EmailSignInModel  with EmailAndPasswordValidators{
       submitted: submitted ?? this.submitted,
     );
   }
+
+  @override
+  int get hashCode =>
+      hashValues(email, password, formType, isLoading, submitted);
+
+  @override
+  bool operator ==(other) {
+    if (identical(this, other)) return true;
+    if (runtimeType != other.runtimeType) return false;
+    final EmailSignInModel otherModel = other;
+    return email == otherModel.email &&
+        password == otherModel.password &&
+        formType == otherModel.formType &&
+        isLoading == otherModel.isLoading &&
+        submitted == otherModel.submitted;
+  }
+
+  @override
+  String toString() => 'email: $email, password: $password, formType: $formType, isLoading: $isLoading, submitted: $submitted';
 }
