@@ -78,6 +78,8 @@ void main() {
       expect(passwordField, findsOneWidget);
       await tester.enterText(passwordField, password);
 
+// tester.pump() can be used to triger the rebuild of a widget
+// use tester.pumpAndSetle() if any animated is involved
       await tester.pump();
 
       final signInButton = find.text('sign in');
