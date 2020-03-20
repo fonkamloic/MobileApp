@@ -11,8 +11,10 @@ import 'package:flutter/services.dart';
 class SignInPage extends StatelessWidget {
   const SignInPage({Key key, @required this.manager, @required this.isLoading});
 
-final bool isLoading;
+  final bool isLoading;
   final SignInManager manager;
+
+  static Key emailPasswordKey = Key('email-password');
 
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
@@ -22,7 +24,10 @@ final bool isLoading;
         builder: (_, isLoading, __) => Provider<SignInManager>(
           create: (_) => SignInManager(auth: auth, isLoading: isLoading),
           child: Consumer<SignInManager>(
-              builder: (context, manager, _) => SignInPage(manager: manager, isLoading: isLoading.value,)),
+              builder: (context, manager, _) => SignInPage(
+                    manager: manager,
+                    isLoading: isLoading.value,
+                  )),
         ),
       ),
     );
@@ -126,6 +131,7 @@ final bool isLoading;
             height: 8,
           ),
           SignInButton(
+            key: emailPasswordKey,
             text: 'Sign in with email',
             textColor: Colors.white,
             color: Color(0xff016D60),
