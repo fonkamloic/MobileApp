@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "840136391475",
+    "firebase_url": "https://cloud-fun-c95b9.firebaseio.com",
+    "project_id": "cloud-fun-c95b9",
+    "storage_bucket": "cloud-fun-c95b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840136391475:android:c0b173f867e5e0d4ad1c46",
+        "android_client_info": {
+          "package_name": "me.fonkamloic.cloud_funct"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840136391475-teplti1io47ijkba1kim2cjgo05i19ku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.fonkamloic.cloud_funct",
+            "certificate_hash": "f6eb123049d945d59288c7f1e4f01766ce772bc9"
+          }
+        },
+        {
+          "client_id": "840136391475-frbqth3i7kl1dvarmdiui8u5gftd4aps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXvAQIRY8n_52ruMfJ9LEVIHEsvjHuV84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840136391475-frbqth3i7kl1dvarmdiui8u5gftd4aps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
